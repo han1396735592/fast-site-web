@@ -74,9 +74,9 @@ export const generator = (routerMap, parent) => {
       // path: `${parent && parent.path || ''}/${item.key}`,
       path: `${item.path}`,
       // 路由名称，建议唯一
-      name: item.name || item.key || '',
+      name: item.key, // 权限标志，唯一的
       // 该路由对应页面的 组件
-      component: constantRouterComponents[item.component || item.key],
+      component: constantRouterComponents[item.component],
       // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
       meta: { title: item.title, icon: item.icon || undefined, permission: item.key && [ item.key ] || null }
     }

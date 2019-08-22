@@ -50,6 +50,7 @@ export const generatorDynamicRouter = () => {
     // ajax
     getRouterByUser().then(res => {
       const result = res.data
+      console.log(result)
       const routers = generator(result)
       routers.push(notFoundRouter)
       resolve(routers)
@@ -70,7 +71,8 @@ export const generator = (routerMap, parent) => {
   return routerMap.map(item => {
     const currentRouter = {
       // 路由地址 动态拼接生成如 /dashboard/workplace
-      path: `${parent && parent.path || ''}/${item.key}`,
+      // path: `${parent && parent.path || ''}/${item.key}`,
+      path: `${item.path}`,
       // 路由名称，建议唯一
       name: item.name || item.key || '',
       // 该路由对应页面的 组件

@@ -5,7 +5,7 @@
     :collapsible="collapsible"
     v-model="collapsed"
     :trigger="null">
-    <logo />
+    <logo title="hello"/>
     <s-menu
       :collapsed="collapsed"
       :menu="menus"
@@ -13,6 +13,7 @@
       :mode="mode"
       @select="onSelect"
       style="padding: 16px 0px;"></s-menu>
+
   </a-layout-sider>
 
 </template>

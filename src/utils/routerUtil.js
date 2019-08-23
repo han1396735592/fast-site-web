@@ -13,8 +13,16 @@ const constantRouterComponents = {
   // 你需要动态引入的页面组件
   analysis: () => import('@/views/dashboard/Analysis'),
   workplace: () => import('@/views/dashboard/Workplace'),
-  monitor: () => import('@/views/dashboard/Monitor')
+  monitor: () => import('@/views/dashboard/Monitor'),
   // ...more
+  menuList: () => import('@/page/sys/menu/MneuList'),
+
+  roleList: () => import('@/views/role/RoleList'),
+  userList: () => import('@/views/user/UserList'),
+  deptList: () => import('@/page/dept/DeptList'),
+  apiPage: () => import('@/page/ApiPage'),
+  druid: () => import('@/page/Druid')
+
 }
 
 // 前端未找到页面路由（固定不用改）
@@ -28,7 +36,7 @@ const notFoundRouter = {
  */
 export const getRouterByUser = () => {
   return axios({
-    url: '/user/dynamic-menu',
+    url: '/sysMenu/tree',
     method: 'get'
     /* headers: {
       'Access-Token': 'xxx'
@@ -74,11 +82,11 @@ export const generator = (routerMap, parent) => {
       // path: `${parent && parent.path || ''}/${item.key}`,
       path: `${item.path}`,
       // 路由名称，建议唯一
-      name: item.key, // 权限标志，唯一的
+      name: item.flag, // 权限标志，唯一的
       // 该路由对应页面的 组件
       component: constantRouterComponents[item.component],
       // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
-      meta: { title: item.title, icon: item.icon || undefined, permission: item.key && [ item.key ] || null }
+      meta: { title: item.title, icon: item.icon || undefined, permission: item.flag && [ item.flag ] || null }
     }
     // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
     currentRouter.path = currentRouter.path.replace('//', '/')

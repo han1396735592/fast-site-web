@@ -150,8 +150,7 @@
 
 <script>
 import { STable } from '@/components'
-import { getRoleList, getServiceList } from '@/api/manage'
-
+import service from '@/api/service'
 export default {
   name: 'TableList',
   components: {
@@ -189,7 +188,7 @@ export default {
         },
         {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'enable'
         },
         {
           title: '创建时间',
@@ -203,27 +202,22 @@ export default {
         }
       ],
       // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
-        return getRoleList(parameter)
-          .then(res => {
-            return res.result
-          })
-      },
+
 
       selectedRowKeys: [],
       selectedRows: []
     }
   },
   created () {
-    getServiceList().then(res => {
-      console.log('getServiceList.call()', res)
-    })
-
-    getRoleList().then(res => {
-      console.log('getRoleList.call()', res)
-    })
   },
   methods: {
+    loadData: parameter => {
+      console.log(service)
+      return service.userService.pageQuery(parameter)
+        .then(res => {
+          return res
+        })
+    },
     handleEdit (record) {
       this.mdl = Object.assign({}, record)
 

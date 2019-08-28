@@ -4,7 +4,7 @@
       <a-layout-header>
         <a-row type="flex">
           <a-col :span="2" :offset="1">
-                        <a-button type="primary" @click="$refs.sysUserEdit.add({})">添加</a-button>
+            <a-button type="primary" @click="$refs.roleEdit.add({})">添加</a-button>
           </a-col>
           <a-col :span="2">
             <a-button type="danger" @click="delAll">删除</a-button>
@@ -21,16 +21,19 @@
           :showPagination="true"
           :rowSelection="rowSelection"
         >
+          <span slot="enable" slot-scope="enable">
+            <a-tag :color="enable?'blue':'pink'">{{ enable?'正常':'锁定' }}</a-tag>
+          </span>
+
           <span slot="action" slot-scope="text, record">
-<!--            <a @click="$refs.sysUserEdit.edit(record)">编辑</a>-->
+            <a @click="$refs.roleEdit.edit(record)">编辑</a>
           </span>
         </s-table>
       </a-layout-content>
       <a-layout-footer>
-        <!--        <sys-user-edit ref="sysUserEdit" :update="()=>{this.$refs.table.refresh()}"></sys-user-edit>-->
+        <role-edit ref="roleEdit" :update="()=>{this.$refs.table.refresh()}"></role-edit>
       </a-layout-footer>
     </a-layout>
-
   </page-view>
 
 </template>
@@ -38,36 +41,44 @@
 <script>
 import { STable } from '@/components'
 import service from '@/api/service'
-import PageView from '../../layouts/PageView'
+import RoleEdit from './RoleEdit'
+import PageView from '../../../layouts/PageView'
 
+const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'id'
+  },
+  {
+    title: '名称',
+    dataIndex: 'name'
+  }, {
+    title: '说明',
+    dataIndex: 'description'
+  }, {
+    title: '部门号',
+    dataIndex: 'deptId'
+  }, {
+    title: '状态',
+    dataIndex: 'enable',
+    scopedSlots: { customRender: 'enable' }
+
+  }, {
+    table: '操作',
+    dataIndex: 'action',
+    scopedSlots: { customRender: 'action' }
+  }
+]
 export default {
   components: {
     PageView,
+    RoleEdit,
     STable
   },
-  name: 'UserList',
+  name: 'RoleList',
   data () {
     return {
-      columns: [
-        {
-          title: 'ID',
-          dataIndex: 'id'
-        },
-        {
-          title: 'username',
-          dataIndex: 'username'
-        }, {
-          title: 'password',
-          dataIndex: 'password'
-        }, {
-          title: '真实姓名',
-          dataIndex: 'name'
-        }, {
-          table: '操作',
-          dataIndex: 'action',
-          scopedSlots: { customRender: 'action' }
-        }
-      ],
+      columns,
       rowSelection: {
         type: 'checkbox',
         onChange (selectedRowKeys, selectedRows) {
@@ -80,7 +91,7 @@ export default {
       queryParam: {},
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return service.userService.pageQuery(parameter).then(res => {
+        return service.roleService.pageQuery(parameter).then(res => {
           return res
         }
         )
@@ -94,7 +105,7 @@ export default {
       }, 1500)
     },
     delAll () {
-      this.$service.userService.batchDelIds(this.$refs.table.rowSelection.selectedRowKeys.toString()).then(res => {
+      this.$service.roleService.batchDelIds(this.$refs.table.rowSelection.selectedRowKeys.toString()).then(res => {
         this.$refs.table.refresh()
       })
     }

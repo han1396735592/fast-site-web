@@ -32,50 +32,29 @@
       </a-form-item>
 
       <a-form-item
-        label="标题"
+        label="名称"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input v-decorator="['title', {rules:[{required: true, message: '请输入标题'}]}]"/>
+        <a-input v-decorator="['name', {rules:[{required: true, message: '请输入标题'}]}]"/>
       </a-form-item>
       <a-form-item
-        label="路径"
+        label="说明"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input v-decorator="['path', {rules:[{required: false, message: '请输入路径'}]}]">
+        <a-input v-decorator="['description', {rules:[{required: true, message: '请输入密码'}]}]">
         </a-input>
       </a-form-item>
       <a-form-item
-        label="图标"
+        label="状态"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input v-decorator="['icon', {rules:[{required: false, message: '请输入图标'}]}]">
-        </a-input>
-      </a-form-item>
-      <a-form-item
-        label="组件"
-        :labelCol="labelCol"
-        :wrapperCol="wrapperCol"
-      >
-        <a-input v-decorator="['component', {rules:[{required: false, message: '组件'}]}]">
-        </a-input>
-      </a-form-item>
-      <a-form-item
-        label="权限标志"
-        :labelCol="labelCol"
-        :wrapperCol="wrapperCol"
-      >
-        <a-input v-decorator="['flag', {rules:[{required: true, message: '权限标志'}]}]"/>
-      </a-form-item>
-      <a-form-item
-        label="重定向"
-        :labelCol="labelCol"
-        :wrapperCol="wrapperCol"
-      >
-        <a-input v-decorator="['redirect', {rules:[{required: false, message: '重定向'}]}]">
-        </a-input>
+        <a-switch
+          v-decorator="['enable', { valuePropName: 'checked' }]"
+          checkedChildren="启用"
+          unCheckedChildren="锁定"/>
       </a-form-item>
 
     </a-form>
@@ -84,7 +63,7 @@
 
 <script>
 export default {
-  name: 'MenuEdit',
+  name: 'DeptEdit',
   data () {
     return {
       labelCol: {
@@ -95,7 +74,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 13 }
       },
-      title: '系统菜单-添加',
+      title: '部门-添加',
       visible: false,
       form: this.$form.createForm(this),
       selectList: [],
@@ -111,8 +90,8 @@ export default {
     }
   },
   beforeMount () {
-    this.$service.menuService.tree({
-      'select': 'id,pid,title,icon'
+    this.$service.deptService.tree({
+      'select': 'id,pid,name'
     }).then(res => {
       this.selectList = res
     })
@@ -128,7 +107,7 @@ export default {
       function tree (list, flag) {
         return list.map(item => {
           item.value = item.id
-          item.label = item.title
+          item.label = item.name
           item.slots = {
             icon: 'smile'
           }
@@ -170,11 +149,11 @@ export default {
           console.log('values', values)
           this.visible = false
           if (values.id) {
-            this.$service.menuService.update(values).then(res => {
+            this.$service.deptService.update(values).then(res => {
               this.update()
             })
           } else {
-            this.$service.menuService.add(values).then(res => {
+            this.$service.deptService.add(values).then(res => {
               this.update()
             })
           }

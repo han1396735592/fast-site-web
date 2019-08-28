@@ -2,33 +2,33 @@
   <a-modal :width="640" :visible="visible" :title="title" @ok="handleSubmit" @cancel="visible = false">
     <a-form @submit="handleSubmit" :form="form">
       <a-form-item
-        label="用户ID"
+        label="角色ID"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
         <a-input disabled v-decorator="['id']"></a-input>
       </a-form-item>
       <a-form-item
-        label="用户名"
+        label="名称"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input v-decorator="['username', {rules:[{required: true, message: '请输入用户名'}]}]"/>
+        <a-input v-decorator="['name', {rules:[{required: true, message: '请输入用户名'}]}]"/>
       </a-form-item>
       <a-form-item
-        label="密码"
+        label="说明"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input v-decorator="['password', {rules:[{required: true, message: '请输入密码'}]}]">
+        <a-input v-decorator="['description', {rules:[{required: true, message: '请输入密码'}]}]">
         </a-input>
       </a-form-item>
       <a-form-item
-        label="姓名"
+        label="部门号"
         :labelCol="labelCol"
         :wrapperCol="wrapperCol"
       >
-        <a-input v-decorator="['name', {rules:[{required: true, message: '请输入姓名'}]}]">
+        <a-input v-decorator="['deptId', {rules:[{required: true, message: '请输入部门号'}]}]">
         </a-input>
       </a-form-item>
       <a-form-item
@@ -39,7 +39,7 @@
         <a-switch
           v-decorator="['enable', { valuePropName: 'checked' }]"
           checkedChildren="启用"
-          unCheckedChildren="锁定" />
+          unCheckedChildren="锁定"/>
       </a-form-item>
 
     </a-form>
@@ -49,8 +49,9 @@
 <script>
 import AInputSearch from 'ant-design-vue/es/input/Search'
 import md5 from 'md5'
+
 export default {
-  name: 'SysUserEdit',
+  name: 'RoleEdit',
   components: { AInputSearch },
   data () {
     return {
@@ -68,7 +69,13 @@ export default {
     }
   },
   props: {
-    update: Function
+    update: {
+      request: false,
+      type: Function,
+      default () {
+
+      }
+    }
   },
 
   methods: {
@@ -84,7 +91,7 @@ export default {
         this.$nextTick(() => {
           setFieldsValue({
             id: record.id,
-            name: record.name,
+            deptId: record.deptId,
             username: record.username,
             password: record.password,
             enable: record.enable
@@ -104,11 +111,11 @@ export default {
           this.visible = false
           values.password = md5(values.password)
           if (values.id) {
-            this.$service.sysUserService.update(values).then(res => {
+            this.$service.roleService.update(values).then(res => {
               this.update()
             })
           } else {
-            this.$service.sysUserService.add(values).then(res => {
+            this.$service.roleService.add(values).then(res => {
               this.update()
             })
           }

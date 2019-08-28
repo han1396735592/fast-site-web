@@ -16,10 +16,10 @@ const constantRouterComponents = {
   monitor: () => import('@/views/dashboard/Monitor'),
   // ...more
   menuList: () => import('@/page/sys/menu/MneuList'),
+  roleList: () => import('@/page/sys/role/RoleList'),
+  userList: () => import('@/page/sys/user/UserList'),
+  deptList: () => import('@/page/sys/dept/DeptList'),
 
-  roleList: () => import('@/views/role/RoleList'),
-  userList: () => import('@/views/user/UserList'),
-  deptList: () => import('@/page/dept/DeptList'),
   apiPage: () => import('@/page/ApiPage'),
   druid: () => import('@/page/Druid')
 

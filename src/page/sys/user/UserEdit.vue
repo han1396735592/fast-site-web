@@ -1,0 +1,127 @@
+<template>
+  <a-modal :width="640" :visible="visible" :title="title" @ok="handleSubmit" @cancel="visible = false">
+    <a-form @submit="handleSubmit" :form="form">
+      <a-form-item
+        label="用户ID"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input disabled v-decorator="['id']"></a-input>
+      </a-form-item>
+      <a-form-item
+        label="用户名"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input v-decorator="['username', {rules:[{required: true, message: '请输入用户名'}]}]"/>
+      </a-form-item>
+      <a-form-item
+        label="密码"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input v-decorator="['password', {rules:[{required: true, message: '请输入密码'}]}]">
+        </a-input>
+      </a-form-item>
+      <a-form-item
+        label="部门号"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-input v-decorator="['deptId', {rules:[{required: true, message: '请输入部门号'}]}]">
+        </a-input>
+      </a-form-item>
+      <a-form-item
+        label="状态"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+      >
+        <a-switch
+          v-decorator="['enable', { valuePropName: 'checked' }]"
+          checkedChildren="启用"
+          unCheckedChildren="锁定"/>
+      </a-form-item>
+
+    </a-form>
+  </a-modal>
+</template>
+
+<script>
+import AInputSearch from 'ant-design-vue/es/input/Search'
+import md5 from 'md5'
+
+export default {
+  name: 'UserEdit',
+  components: { AInputSearch },
+  data () {
+    return {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 7 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 13 }
+      },
+      title: '系统用户-添加',
+      visible: false,
+      form: this.$form.createForm(this)
+    }
+  },
+  props: {
+    update: {
+      request: false,
+      type: Function,
+      default () {
+
+      }
+    }
+  },
+
+  methods: {
+    add () {
+      this.visible = true
+      this.form.resetFields()
+    },
+    edit (record) {
+      const { form: { setFieldsValue } } = this
+      this.visible = true
+      if (record) {
+        console.log(record)
+        this.$nextTick(() => {
+          setFieldsValue({
+            id: record.id,
+            deptId: record.deptId,
+            username: record.username,
+            password: record.password,
+            enable: record.enable
+          })
+        })
+        if (record.id) {
+          this.title = '系统用户-修改'
+        }
+      }
+    },
+    handleSubmit (e) {
+      const { form: { validateFields } } = this
+      e.preventDefault()
+      validateFields((errors, values) => {
+        if (!errors) {
+          console.log('values', values)
+          this.visible = false
+          values.password = md5(values.password)
+          if (values.id) {
+            this.$service.userService.update(values).then(res => {
+              this.update()
+            })
+          } else {
+            this.$service.userService.add(values).then(res => {
+              this.update()
+            })
+          }
+        }
+      })
+    }
+  }
+}
+</script>
